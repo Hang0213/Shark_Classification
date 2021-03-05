@@ -1,0 +1,121 @@
+from os.path import join, exists
+from os import listdir, makedirs
+from shutil import copyfile
+
+species = [
+    "Alopias",
+    "Carcharias",
+    "Carcharodon",
+    "Galeocerdo",
+    "Heterodontus",
+    "Hexanchus",
+    "Negaprion",
+    "Orectolobus",
+    "Prionace",
+    "Rhincodon",
+    "Sphyrna",
+    "Triaenodon",
+]
+
+
+source_folder = "./train_data/"
+destination_folder = "./train/"
+
+
+def rename_files():
+    """
+    Initially the file names are incosistent. This function
+    changes the file name to make it more understanding.
+
+    Example - for example, DSC_6272.jpg may be changed to 100101.jpg
+    For shark_specie_counter < 10, in this,
+    100 -> original image, 1 -> Class Number, 01 -> Image Number
+
+    Similarly, for the case if the species counter is greater than 10.
+    """
+    shark_specie_counter = 1
+
+    for shark_specie in species:
+
+        #
+        source_image_dir = join(source_folder, shark_specie)
+        print(source_image_dir)
+        source_images = listdir(source_image_dir)
+        print(source_images)
+
+        for source_image in source_images:
+
+            destination = join(destination_folder, shark_specie)
+            print(destination)
+            if shark_specie_counter < 10:
+
+                images = 0
+                for source_image in source_images:
+
+                    if images < 10:
+                        copyfile(
+                            join(source_image_dir, source_image),
+                            join(
+                                destination,
+                                str(100)
+                                + str(shark_specie_counter)
+                                + str(0)
+                                + str(images)
+                                + ".jpg",
+                            ),
+                        )
+
+                    elif images >= 10:
+                        copyfile(
+                            join(source_image_dir, source_image),
+                            join(
+                                destination,
+                                str(100)
+                                + str(shark_specie_counter)
+                                + str(images)
+                                + ".jpg",
+                            ),
+                        )
+
+                    images += 1
+
+            elif shark_specie_counter >= 10:
+
+                images = 0
+
+                for source_image in source_images:
+
+                    if images < 10:
+                        copyfile(
+                            join(source_image_dir, source_image),
+                            join(
+                                destination,
+                                str(10)
+                                + str(shark_specie_counter)
+                                + str(0)
+                                + str(images)
+                                + ".jpg",
+                            ),
+                        )
+
+                    elif images >= 10:
+                        copyfile(
+                            join(source_image_dir, source_image),
+                            join(
+                                destination,
+                                str(10)
+                                + str(shark_specie_counter)
+                                + str(images)
+                                + ".jpg",
+                            ),
+                        )
+                    images += 1
+
+        shark_specie_counter += 1
+
+
+if __name__ == "__main__":
+    for shark_specie in species:
+        if not exists(join(destination_folder, shark_specie)):
+            destination = makedirs(join(destination_folder, shark_specie))
+    rename_files()
